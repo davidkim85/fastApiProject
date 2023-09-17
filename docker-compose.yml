@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  db:
+    container_name: dev_db
+    image: postgres:14.5
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      -.env
+
   web:
     container_name: fastApi
     build: .
@@ -8,11 +17,13 @@ services:
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - .:/code
       - static_vol:/code/static
       - media_vol:/code/media
+    depends_on:
+      - db
 
   nginx:
     container_name: nginx
